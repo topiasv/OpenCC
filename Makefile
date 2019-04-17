@@ -30,6 +30,16 @@ build:
 	../..)
 	make -C build/rel VERBOSE=${VERBOSE} PREFIX=${PREFIX}
 
+no-doc:
+	mkdir -p build/rel
+	(cd build/rel; cmake \
+	-DBUILD_DOCUMENTATION:BOOL=OFF \
+	-DENABLE_GTEST:BOOL=OFF \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=${PREFIX} \
+	../..)
+	make -C build/rel VERBOSE=${VERBOSE} PREFIX=${PREFIX}
+
 package: build
 	make -C build/rel package_source VERBOSE=${VERBOSE}
 	make -C build/rel package_source VERBOSE=${VERBOSE} PREFIX=${PREFIX}
@@ -68,4 +78,7 @@ clean:
 	rm -rf build xcode
 
 install: build
+	make -C build/rel install VERBOSE=${VERBOSE} PREFIX=${PREFIX}
+
+install-no-doc: no-doc
 	make -C build/rel install VERBOSE=${VERBOSE} PREFIX=${PREFIX}
